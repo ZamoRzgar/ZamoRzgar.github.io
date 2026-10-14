@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>zamo.dev</title>
+<meta name="description" content="zamo.dev — a quiet wall of code. Engineering intelligence with feeling.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0c'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='14' font-weight='bold' fill='%23d9a05b' text-anchor='middle'%3EZA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=3">
+<script>
+  try { document.documentElement.dataset.theme = localStorage.getItem("zamo.theme") || "dark"; } catch (e) {}
+</script>
+</head>
+<body class="landing">
+
+<header class="topbar">
+  <a class="brand" href="./"><span class="mark">ZA</span> zamo.dev</a>
+  <nav class="elsewhere" aria-label="Elsewhere">
+    <a href="https://github.com/ZamoRzgar">github</a>
+  </nav>
+</header>
+
+<h1 class="sr-only">zamo.dev — engineering intelligence with feeling.</h1>
+
+<main class="stage">
+  <canvas class="wall" id="wall" aria-hidden="true"></canvas>
+  <canvas class="kb" id="kb" aria-hidden="true"></canvas>
+
+  <p class="note" aria-hidden="true">// engineering intelligence with feeling.</p>
+  <div class="hero-actions">
+    <button class="theme-key" id="theme-btn" type="button" aria-label="Change theme"><span class="cmd-glyph" aria-hidden="true">⤶_</span>:theme</button>
+    <a class="enter" href="site/" aria-label="Enter">enter ↩</a>
+  </div>
+
+  <nav class="sources sr-only" aria-label="Code shown on this page">
+    <ul>
+      <li><a href="https://github.com/ZamoRzgar/gnn-fraud-detection">gnn-fraud-detection/code/src/models.py</a></li>
+      <li><a href="https://github.com/ZamoRzgar/Multi-agent-RCA-project">Multi-agent-RCA-project/src/agents/judge.py</a></li>
+      <li><a href="https://github.com/ZamoRzgar/live-ddos-map">live-ddos-map/src/map.ts</a></li>
+    </ul>
+  </nav>
+</main>
+
+<div class="cmdline" id="cmdline" hidden>
+  <span class="cmd-prompt">:</span><input id="cmd-input" type="text" autocomplete="off" spellcheck="false" aria-label="Command">
+</div>
+
+<script src="assets/js/data.js?v=3"></script>
+<script src="assets/js/home.js?v=3"></script>
+<script src="assets/js/landing.js?v=3"></script>
+</body>
+</html>
