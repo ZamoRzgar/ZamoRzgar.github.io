@@ -1,4 +1,4 @@
-/* zamo.dev — ascii portrait on canvas.
+/* zamo — ascii portrait on canvas.
    Chars fly in from a scattered ring, then hovering pulls them into a
    swirling vortex around the cursor, like a black hole. */
 

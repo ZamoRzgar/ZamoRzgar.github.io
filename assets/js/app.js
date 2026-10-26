@@ -1,4 +1,4 @@
-/* zamo.dev — main site engine: circular wheel + terminal pane */
+/* zamo — main site engine: circular wheel + terminal pane */
 
 (() => {
   "use strict";

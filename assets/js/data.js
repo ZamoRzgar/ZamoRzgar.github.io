@@ -1,6 +1,6 @@
 const SITE = {
   name: "ZAMO RZGAR AHMED",
-  brand: "zamo.dev",
+  brand: "zamo",
   mark: "ZA",
   github: "https://github.com/ZamoRzgar",
   githubUser: "ZamoRzgar",

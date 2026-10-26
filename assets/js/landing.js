@@ -1,4 +1,4 @@
-/* zamo.dev — landing page chrome (theme, command line, shortcuts) */
+/* zamo — landing page chrome (theme, command line, shortcuts) */
 
 (() => {
   "use strict";

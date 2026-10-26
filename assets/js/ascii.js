@@ -1,4 +1,4 @@
-/* zamo.dev — ascii portrait art (same art as heyamit.dev/ascii-dp.svg) */
+/* zamo — ascii portrait art (same art as heyamit.dev/ascii-dp.svg) */
 const PORTRAIT = [
   "",
   "",

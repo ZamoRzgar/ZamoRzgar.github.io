@@ -1,4 +1,4 @@
-/* zamo.dev — landing: a live vim session on canvas + keyboard hands */
+/* zamo — landing: a live vim session on canvas + keyboard hands */
 
 (() => {
   "use strict";
