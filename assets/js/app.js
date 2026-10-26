@@ -74,7 +74,6 @@
   }
 
   function buildWhoami() {
-    const s = SITE.stats;
     const L = [];
     L.push(...promptLines("~", null, "whoami"));
     L.push(portraitBlock(
@@ -106,11 +105,28 @@
       `  IT systems +40% reliability · training −20% tech incidents.`,
     );
     L.push("");
-    L.push(...promptLines("~", null, `fetch ${SITE.githubUser}`));
+    L.push(...promptLines("~", null, "cat openkylin.md"));
     L.push(
-      kv("followers", s.followers),
-      kv("repos", s.repos, `    <span class="dim">own ${s.own} · forked ${s.repos - s.own}</span>`),
-      kv("since", `${s.since} <span class="dim">→ today</span>`),
+      `<span class="head">openKylin</span> — contributor &amp; community member       <span class="dim">current</span>`,
+      `  Open-source software development · speaker and volunteer at community events.`,
+      `  Took part in the openKylin AI optimization competition.`,
+      `  Currently working with the team on <span class="accent">Arabic language support</span> for the OS.`,
+    );
+    L.push("");
+    L.push(...promptLines("~", null, "cat awards.txt"));
+    L.push(
+      `<span class="head">MOFCOM</span> Chinese Government Scholarship — <span class="accent">PhD</span>    <span class="dim">2026</span>`,
+      `  Full scholarship, Ministry of Commerce of China — AI, Beihang University.`,
+      `<span class="head">MOFCOM</span> Chinese Government Scholarship — <span class="accent">MSc</span>    <span class="dim">2024</span>`,
+      `  Full scholarship — Software Engineering, Nankai University.`,
+      `  <span class="dim">Both degrees funded by the Chinese Government (MOFCOM).</span>`,
+    );
+    L.push("");
+    L.push(...promptLines("~", null, "cat publication.txt"));
+    L.push(
+      `<span class="head">Edge AI for Real-Time Vision: Challenges, Limitations,</span>`,
+      `<span class="head">and Future Research Directions</span>`,
+      kv("doi", link("https://doi.org/10.26389/AJSRP.K091025", "10.26389/AJSRP.K091025")),
     );
     L.push("");
     L.push(...promptLines("~", null, "stack --languages"));
@@ -187,31 +203,6 @@
     return L;
   }
 
-  function buildBlog() {
-    const L = [];
-    L.push(...promptLines("~/blog", null, "whoami --author"));
-    L.push(portraitBlock(
-      `<span class="head">zamo</span>\n` +
-      `writing about multi-agent systems,\n` +
-      `graphs, and edge ai — from Beijing.\n` +
-      `<span class="dim">new post when something is worth it.</span>`
-    ));
-    L.push("");
-    L.push(...promptLines("~/blog", null, "ls -t posts/"));
-    for (const p of SITE.blog) {
-      L.push(`<span class="dim">${p.date}</span>  ${link("#blog/" + p.slug, "posts/" + p.slug + ".md")}`);
-    }
-    for (const p of SITE.blog) {
-      L.push("");
-      L.push(...promptLines("~/blog", null, `cat posts/${p.slug}.md`));
-      L.push(`<span class="head"># ${esc(p.title)}</span>`);
-      L.push(`<span class="dim">${p.date}</span>`);
-      L.push("");
-      for (const line of p.lines) L.push(esc(line));
-    }
-    return L;
-  }
-
   function statsFor(e) {
     if (e.type === "project") {
       return [
@@ -226,12 +217,6 @@
         ["TALKS", 2],
       ];
     }
-    if (e.type === "blog") {
-      return [
-        ["POSTS", SITE.blog.length],
-        ["SINCE", SITE.blog[SITE.blog.length - 1].date.slice(0, 4)],
-      ];
-    }
     return [
       ["REPOS", SITE.stats.repos],
       ["FOLLOWERS", SITE.stats.followers],
@@ -244,7 +229,6 @@
     const lines =
       e.type === "project" ? buildProject(e) :
       e.type === "research" ? buildResearch() :
-      e.type === "blog" ? buildBlog() :
       buildWhoami();
     term.innerHTML = lines
       .map((html, i) => {

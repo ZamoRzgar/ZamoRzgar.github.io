@@ -1,0 +1,127 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "ZA zamo.dev" [ref=e3] [cursor=pointer]:
+      - /url: ../
+      - generic [ref=e4]: ZA
+      - text: zamo.dev
+    - navigation "Elsewhere" [ref=e5]:
+      - link "github" [ref=e6] [cursor=pointer]:
+        - /url: https://github.com/ZamoRzgar
+  - heading "zamo.dev — whoami, projects and research." [level=1] [ref=e7]
+  - main [ref=e8]:
+    - complementary "Editor" [ref=e9]:
+      - button "~/Projects whoami" [ref=e10]:
+        - generic [ref=e11]: ~/Projects
+        - generic [ref=e12]: whoami
+      - generic [ref=e13]:
+        - listbox "whoami, projects and research" [ref=e15]:
+          - option "ZA whoami" [selected] [ref=e16] [cursor=pointer]:
+            - generic [ref=e17]: ZA
+            - generic [ref=e18]: whoami
+          - option "⎇ Multi-agent-RCA" [ref=e19] [cursor=pointer]:
+            - generic [ref=e20]: ⎇
+            - generic [ref=e21]: Multi-agent-RCA
+          - option "◈ gnn-fraud-detection" [ref=e22] [cursor=pointer]:
+            - generic [ref=e23]: ◈
+            - generic [ref=e24]: gnn-fraud-detection
+          - option "◎ R1-Omni" [ref=e25] [cursor=pointer]:
+            - generic [ref=e26]: ◎
+            - generic [ref=e27]: R1-Omni
+          - option "⌖ live-ddos-map" [ref=e28] [cursor=pointer]:
+            - generic [ref=e29]: ⌖
+            - generic [ref=e30]: live-ddos-map
+          - option "▣ image-security-verification" [ref=e31] [cursor=pointer]:
+            - generic [ref=e32]: ▣
+            - generic [ref=e33]: image-security-verification
+        - generic [aria-hidden]: ▶
+      - paragraph [aria-hidden] [ref=e34]: scroll · drag the wheel
+      - paragraph [aria-hidden] [ref=e35]: 2026-10-26
+    - generic [ref=e36]:
+      - generic [ref=e37]: zamo@dev ~
+      - generic [ref=e38]: "> whoami"
+      - generic [ref=e39]: Zamo Rzgar Ahmed AI researcher · software engineer PhD researcher, Software Engineering AI & NLP — Beihang University Beijing, China
+      - generic [ref=e44]: Working on LLMs, multi-agent systems, knowledge graphs,
+      - generic [ref=e45]: multimodal AI and computer vision — engineering intelligence
+      - generic [ref=e46]: with feeling.
+      - generic [ref=e48]: zamo@dev ~
+      - generic [ref=e49]: "> cat education.txt"
+      - generic [ref=e50]: PhD Software Engineering, AI & NLP — Beihang University 2026 →
+      - generic [ref=e51]: MSc Software Engineering — Nankai University 2024–2026
+      - generic [ref=e52]: BSc Information Technology — Sulaimany Polytechnic 2017–2021
+      - generic [ref=e54]: zamo@dev ~
+      - generic [ref=e55]: "> cat experience.txt"
+      - generic [ref=e56]: Codec — Software Engineer 2023–2024
+      - generic [ref=e57]: Scalable web apps with Next.js + Supabase, +30% responsiveness.
+      - generic [ref=e58]: Backend optimization −25% response time · AI features, chatbots.
+      - generic [ref=e59]: SDE — Software Engineer & IT Specialist 2020–2023
+      - generic [ref=e60]: IT systems +40% reliability · training −20% tech incidents.
+      - generic [ref=e62]: zamo@dev ~
+      - generic [ref=e63]: "> cat openkylin.md"
+      - generic [ref=e64]: openKylin — contributor & community member current
+      - generic [ref=e65]: Open-source software development · speaker and volunteer at community events.
+      - generic [ref=e66]: Took part in the openKylin AI optimization competition.
+      - generic [ref=e67]: Currently working with the team on Arabic language support for the OS.
+      - generic [ref=e69]: zamo@dev ~
+      - generic [ref=e70]: "> cat awards.txt"
+      - generic [ref=e71]: MOFCOM Chinese Government Scholarship — PhD 2026
+      - generic [ref=e72]: Full scholarship, Ministry of Commerce of China — AI, Beihang University.
+      - generic [ref=e73]: MOFCOM Chinese Government Scholarship — MSc 2024
+      - generic [ref=e74]: Full scholarship — Software Engineering, Nankai University.
+      - generic [ref=e75]: Both degrees funded by the Chinese Government (MOFCOM).
+      - generic [ref=e77]: zamo@dev ~
+      - generic [ref=e78]: "> cat publication.txt"
+      - generic [ref=e79]: "Edge AI for Real-Time Vision: Challenges, Limitations,"
+      - generic [ref=e80]: and Future Research Directions
+      - generic [ref=e81]:
+        - generic [ref=e82]: doi
+        - link "10.26389/AJSRP.K091025" [ref=e83] [cursor=pointer]:
+          - /url: https://doi.org/10.26389/AJSRP.K091025
+      - generic [ref=e85]: zamo@dev ~
+      - generic [ref=e86]: "> stack --languages"
+      - generic [ref=e87]:
+        - generic [ref=e88]: Python
+        - text: ██████████████ 5 repos
+      - generic [ref=e89]:
+        - generic [ref=e90]: TypeScript
+        - text: ███████████░░░ 4 repos
+      - generic [ref=e91]:
+        - generic [ref=e92]: Jupyter
+        - text: ██████░░░░░░░░ 2 repos
+      - generic [ref=e93]:
+        - generic [ref=e94]: HTML
+        - text: ██████░░░░░░░░ 2 repos
+      - generic [ref=e95]:
+        - generic [ref=e96]: C++
+        - text: ███░░░░░░░░░░░ 1 repo
+      - generic [ref=e97]:
+        - generic [ref=e98]: JavaScript
+        - text: ███░░░░░░░░░░░ 1 repo
+      - generic [ref=e100]: zamo@dev ~
+      - generic [ref=e101]: "> stack --ai"
+      - generic [ref=e102]: LLMs · multi-agent systems · knowledge graphs
+      - generic [ref=e103]: GNNs · multimodal AI · computer vision · NLP
+      - generic [ref=e104]: pytorch · next.js · supabase · typescript
+      - generic [ref=e106]: zamo@dev ~
+      - generic [ref=e107]: "> ls links/"
+      - generic [ref=e108]:
+        - link "github" [ref=e109] [cursor=pointer]:
+          - /url: https://github.com/ZamoRzgar
+        - link "email" [ref=e110] [cursor=pointer]:
+          - /url: mailto:zamo.rzgar1@gmail.com
+        - link "paper" [ref=e111] [cursor=pointer]:
+          - /url: https://doi.org/10.26389/AJSRP.K091025
+    - complementary [aria-hidden] [ref=e112]:
+      - generic [ref=e113]: · ╲ ╱ · ╲ ●─● ╱ ·──●──╬──●──· ╱ ●─● ╲ · ╱ ╲ ·
+      - generic [ref=e114]: "['pupil:u'] 0.5354021 0.5013513 0.0173530020 None"
+  - contentinfo [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e117]: ZAMO RZGAR AHMED
+      - generic [ref=e118]: "↑↓ select · ↩ open · : cmd"
+    - generic [ref=e119]:
+      - generic [ref=e120]:
+        - generic [ref=e121]: REPOS
+        - generic [ref=e122]: "20"
+      - generic [ref=e123]:
+        - generic [ref=e124]: FOLLOWERS
+        - generic [ref=e125]: "95"
+    - generic [ref=e126]: VISITS · local 22
