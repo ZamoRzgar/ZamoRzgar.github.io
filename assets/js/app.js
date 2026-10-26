@@ -288,7 +288,7 @@
     b.innerHTML = `<span class="glyph">${esc(e.glyph)}</span><span class="title">${esc(e.title)}</span>`;
     b.addEventListener("click", () => {
       if (dragMoved > 4) return; // was a drag, not a click
-      if (i === idx) window.open(currentLink(e), "_blank");
+      if (i === idx) window.open(currentLink(e), "_blank", "noopener");
       else select(i);
     });
     itemsEl.appendChild(b);
@@ -575,14 +575,14 @@
       case "go":
       case "e":
       case "open": {
-        if (!arg && cmd === "open") { window.open(currentLink(entries[idx]), "_blank"); break; }
+        if (!arg && cmd === "open") { window.open(currentLink(entries[idx]), "_blank", "noopener"); break; }
         const q = (arg || "").toLowerCase();
         const i = entries.findIndex((e) => e.id.includes(q) || e.title.toLowerCase().includes(q));
         if (i >= 0) select(i);
         else renderTermRaw([...promptLines("~", null, raw), `<span class="hot">no such entry:</span> ${esc(arg)}`]);
         break;
       }
-      case "github": window.open(SITE.github, "_blank"); break;
+      case "github": window.open(SITE.github, "_blank", "noopener"); break;
       case "mail":
       case "email": location.href = "mailto:" + SITE.email; break;
       case "ls":
@@ -622,7 +622,7 @@
     if (!cmdline.hidden) return;
     if (ev.key === "ArrowDown" || ev.key === "j") { select(idx + 1); ev.preventDefault(); }
     else if (ev.key === "ArrowUp" || ev.key === "k") { select(idx - 1); ev.preventDefault(); }
-    else if (ev.key === "Enter") { window.open(currentLink(entries[idx]), "_blank"); }
+    else if (ev.key === "Enter") { window.open(currentLink(entries[idx]), "_blank", "noopener"); }
     else if (ev.key === ":") { openCmd(); ev.preventDefault(); }
   });
 

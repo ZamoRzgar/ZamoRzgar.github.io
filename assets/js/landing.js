@@ -36,13 +36,13 @@
     const v = cmdInput.value.trim().toLowerCase();
     closeCmd();
     if (v === "theme" || v.startsWith("theme ")) cycleTheme(v.split(" ")[1]);
-    else if (v === "enter" || v === "e" || v === "site") location.href = "site/";
-    else if (v === "github") window.open(SITE.github, "_blank");
+    else if (v === "enter" || v === "e" || v === "site") location.href = "portifolio/";
+    else if (v === "github") window.open(SITE.github, "_blank", "noopener");
   });
 
   document.addEventListener("keydown", (ev) => {
     if (!cmdline.hidden) return;
-    if (ev.key === "Enter") location.href = "site/";
+    if (ev.key === "Enter") location.href = "portifolio/";
     else if (ev.key === ":") { openCmd(); ev.preventDefault(); }
   });
 })();
