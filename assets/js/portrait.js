@@ -41,7 +41,7 @@ const Portrait = (() => {
     const cols = Math.max(...rows.map((r) => r.length));
     const W = Math.round(cols * CELL_W);
     const H = Math.round(rows.length * CELL_H + 2);
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const dpr = Math.min(1.5, window.devicePixelRatio || 1);
 
     const canvas = document.createElement("canvas");
     canvas.width = W * dpr;
@@ -53,7 +53,8 @@ const Portrait = (() => {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     let pal = palette();
-    const onTheme = () => { pal = palette(); };
+    let dirty = true;            // redraw even when nothing moves
+    const onTheme = () => { pal = palette(); dirty = true; };
     window.addEventListener("zamo:theme", onTheme);
 
     const chars = [];
@@ -93,11 +94,9 @@ const Portrait = (() => {
 
     function frame() {
       if (dead) return;
-      ctx.clearRect(0, 0, W, H);
-      ctx.font = `${FONT}px "JetBrains Mono", monospace`;
-      ctx.textBaseline = "alphabetic";
       const R = window.innerWidth > 768 ? 30 : 42;
       const R2 = R * R;
+      let moving = false;
       for (const p of chars) {
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
@@ -117,6 +116,18 @@ const Portrait = (() => {
           const oy = p.y - p.baseY;
           p.y = Math.abs(oy) < 0.5 ? p.baseY : p.y - oy / k;
         }
+        if ((p.x - p.baseX) ** 2 + (p.y - p.baseY) ** 2 > 2) moving = true;
+      }
+      // fully at rest: skip redrawing thousands of glyphs every frame
+      if (!moving && !dirty) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      dirty = false;
+      ctx.clearRect(0, 0, W, H);
+      ctx.font = `${FONT}px "JetBrains Mono", monospace`;
+      ctx.textBaseline = "alphabetic";
+      for (const p of chars) {
         const moved = (p.x - p.baseX) ** 2 + (p.y - p.baseY) ** 2 > 2;
         let tone = p.lum < 0 ? pal.mid : p.lum < 140 ? pal.dark : p.lum > 220 ? pal.light : pal.mid;
         if (moved && tone === pal.dark) tone = pal.lifted;

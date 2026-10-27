@@ -324,7 +324,7 @@
     const cardH = cards[0] ? cards[0].offsetHeight : 96;
     const apexX = W - CARD_W / 2 - 18;
     geo = { W, H, R, half, step: (2 * half) / N, cx: apexX - R, cy: H / 2, cardH };
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const dpr = Math.min(1.5, window.devicePixelRatio || 1);
     inkEl.width = Math.round(W * dpr);
     inkEl.height = Math.round(H * dpr);
     ictx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -512,7 +512,14 @@
   wheelEl.addEventListener("pointerup", endDrag);
   wheelEl.addEventListener("pointercancel", endDrag);
 
+  let lastFrame = 0;
   function tick(t) {
+    // 30fps on small screens: halves canvas work on phones
+    if (window.innerWidth < 768 && t - lastFrame < 33) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    lastFrame = t;
     if (!dragging) {
       if (snapping) {
         rot += (snapTarget - rot) * 0.14;

@@ -446,9 +446,15 @@ a:hover { color: var(--accent); }
 }
 
 @media (max-width: 640px) {
-  .deck { grid-template-columns: 1fr; }
-  .wheel-wrap { order: 2; max-height: 220px; }
+  .deck { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; padding: 4px 12px 8px; }
+  .wheel-wrap { order: 2; height: 205px; max-height: 205px; }
+  .wheel-hint { display: none; }
   .term { order: 1; border: none; padding: 10px 4px; }
+  .term .portrait-mount { width: 150px; }
+  .term .p-row { gap: 14px; }
   .sb-mid { gap: 16px; }
   .sb-hints { display: none; }
+  .sb-right { display: none; }
+  .sb-name { white-space: nowrap; font-size: 11px; }
+  .statusbar { padding: 8px 12px; }
 }

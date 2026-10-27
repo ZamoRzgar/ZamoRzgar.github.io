@@ -198,7 +198,7 @@ export function tick(stream: EventSource, g: CanvasRenderingContext2D) {
   let W = 0, H = 0, DPR = 1, rows = 0, cols = 0, paneW = 0, gutterW = 0;
 
   function resize() {
-    DPR = Math.min(2, window.devicePixelRatio || 1);
+    DPR = Math.min(1.5, window.devicePixelRatio || 1);
     const r = wall.getBoundingClientRect();
     W = r.width; H = r.height;
     wall.width = Math.round(W * DPR);
@@ -572,7 +572,14 @@ export function tick(stream: EventSource, g: CanvasRenderingContext2D) {
 
   /* ── main loop ─────────────────────────────────────── */
 
+  let lastFrame = 0;
   function frame(t) {
+    // 30fps on small screens: halves canvas work on phones
+    if (window.innerWidth < 768 && t - lastFrame < 33) {
+      requestAnimationFrame(frame);
+      return;
+    }
+    lastFrame = t;
     if (wall.isConnected && wall.width) drawWall();
     if (kb.isConnected && kb.width) drawKb(t);
     requestAnimationFrame(frame);
