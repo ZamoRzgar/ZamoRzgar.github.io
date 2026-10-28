@@ -61,11 +61,13 @@ body {
 
 body.site {
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
 body.landing {
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -457,4 +459,38 @@ a:hover { color: var(--accent); }
   .sb-right { display: none; }
   .sb-name { white-space: nowrap; font-size: 11px; }
   .statusbar { padding: 8px 12px; }
+
+  /* landing: everything in flow, page scrolls if it doesn't fit */
+  body.landing {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+  .landing .wall { min-height: 300px; }
+  .landing .kb { height: 150px; }
+  .note { position: static; transform: none; padding: 4px 18px 0; }
+  .hero-actions {
+    position: static;
+    margin-top: auto;
+    justify-content: flex-end;
+    padding: 10px 16px 20px;
+  }
+}
+
+/* landscape phones / short screens: landing scrolls too */
+@media (max-height: 560px) {
+  body.landing {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+  .note { position: static; transform: none; padding: 4px 18px 0; }
+  .hero-actions {
+    position: static;
+    margin-top: auto;
+    justify-content: flex-end;
+    padding: 10px 16px 20px;
+  }
 }
