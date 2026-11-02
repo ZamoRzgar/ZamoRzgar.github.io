@@ -5,98 +5,26 @@
 
   /* ── code buffers shown in the editor ──────────────── */
 
+  // Real excerpts from the repos (path + starting line number are accurate).
   const FILES = [
     {
-      path: "~/projects/gnn-fraud-detection/code/src/models.py",
-      lang: "py",
-      code: `import torch
-import torch.nn.functional as F
-from torch_geometric.nn import GATv2Conv, BatchNorm
-
-# fraud spreads along edges — model the graph, not the table
-
-class FraudGAT(torch.nn.Module):
-    def __init__(self, in_dim, hid=128, heads=4, dropout=0.3):
-        super().__init__()
-        self.conv1 = GATv2Conv(in_dim, hid, heads=heads, dropout=dropout)
-        self.bn1 = BatchNorm(hid * heads)
-        self.conv2 = GATv2Conv(hid * heads, hid, heads=1, concat=False)
-        self.bn2 = BatchNorm(hid)
-        self.head = torch.nn.Linear(hid, 2)
-
-    def forward(self, x, edge_index):
-        x = F.elu(self.bn1(self.conv1(x, edge_index)))
-        x = F.dropout(x, p=0.3, training=self.training)
-        x = F.elu(self.bn2(self.conv2(x, edge_index)))
-        return self.head(x)
-
-# extreme imbalance: ~0.5% of nodes are fraud
-# focal loss keeps the rare class visible
-
-def focal_loss(logits, y, gamma=2.0, alpha=0.95):
-    ce = F.cross_entropy(logits, y, reduction="none")
-    pt = torch.exp(-ce)
-    w = alpha * (1 - pt) ** gamma
-    return (w * ce).mean()`,
+      "path": "~/projects/gnn-fraud-detection/code/src/models.py",
+      "lang": "py",
+      "start": 343,
+      "code": "    def forward(self, x, relation_edge_index, y=None, train_mask=None):\n        num_nodes = x.shape[0]\n        h = F.relu(self.input_proj(x))\n        h = F.dropout(h, p=self.dropout, training=self.training)\n        self._h = h  # kept for aux_loss()\n\n        views = []\n        for r, rel in enumerate(sorted(relation_edge_index)):\n            ei = self._filter_and_sample(\n                h,\n                relation_edge_index[rel],\n                self.sim_mlps[r] if self.use_filter else None,\n                num_nodes,\n                y,\n                train_mask,\n            )\n            agg = _dot_attention_aggregate(h, ei, self.attn_mats[r], num_nodes)\n            views.append(F.relu(agg + h))  # residual self-connection\n        hv = torch.stack(views, dim=1)  # [N, R, H]\n\n        alpha = torch.softmax(\n            hv @ self.rel_query / math.sqrt(hv.shape[-1]), dim=1\n        )  # [N, R]\n        z = (alpha.unsqueeze(-1) * hv).sum(dim=1)\n        z = F.dropout(z, p=self.dropout, training=self.training)\n        return self.classifier(z)"
     },
     {
-      path: "~/projects/Multi-agent-RCA-project/src/agents/judge.py",
-      lang: "py",
-      code: `from dataclasses import dataclass
-
-# the judge breaks ties between reasoners
-# and rejects answers the graph cannot support
-
-@dataclass
-class Verdict:
-    root_cause: str
-    confidence: float
-    grounded: bool
-
-class JudgeAgent:
-    def __init__(self, llm, kg, tau=0.72):
-        self.llm = llm
-        self.kg = kg
-        self.tau = tau
-
-    def deliberate(self, claims):
-        # every claim must cite a kg path — no path, no vote
-        grounded = [c for c in claims if self.kg.supports(c)]
-        if not grounded:
-            return Verdict("insufficient evidence", 0.0, False)
-        ballot = self.llm.rank(grounded)
-        best = ballot[0]
-        ok = best.score >= self.tau
-        return Verdict(best.cause, best.score, ok)`,
+      "path": "~/projects/Multi-agent-RCA-project/src/agents/judge.py",
+      "lang": "py",
+      "start": 47,
+      "code": "        parsed_logs = input_data.get(\"parsed_logs\", {})\n        kg_facts = input_data.get(\"kg_facts\", {})\n        \n        logger.info(f\"Judging {len(hypotheses)} hypotheses\")\n        \n        # Score each hypothesis\n        scored_hypotheses = []\n        for hyp in hypotheses:\n            scores = self._score_hypothesis(hyp, parsed_logs, kg_facts)\n            scored_hypotheses.append({\n                \"hypothesis\": hyp,\n                \"scores\": scores,\n                \"total_score\": sum(scores.values())\n            })\n        \n        # Select best hypothesis\n        best = max(scored_hypotheses, key=lambda x: x[\"total_score\"])\n        \n        judgment = {\n            \"selected_hypothesis\": best[\"hypothesis\"],\n            \"all_scores\": scored_hypotheses,\n            \"reasoning\": self._generate_reasoning(scored_hypotheses),\n            \"confidence\": best[\"total_score\"] / len(self.scoring_criteria)\n        }\n        \n        return judgment"
     },
     {
-      path: "~/projects/live-ddos-map/src/map.ts",
-      lang: "ts",
-      code: `type Attack = { src: [number, number]; dst: [number, number]; bps: number };
-
-// arcs bend with distance, color with volume
-export function drawAttack(g: CanvasRenderingContext2D, a: Attack) {
-  const [x0, y0] = project(a.src);
-  const [x1, y1] = project(a.dst);
-  const mx = (x0 + x1) / 2;
-  const my = (y0 + y1) / 2;
-  const lift = Math.hypot(x1 - x0, y1 - y0) * 0.18;
-
-  g.strokeStyle = heat(a.bps);
-  g.lineWidth = Math.min(3, 0.4 + a.bps / 4e8);
-  g.beginPath();
-  g.moveTo(x0, y0);
-  g.quadraticCurveTo(mx, my - lift, x1, y1);
-  g.stroke();
-}
-
-export function tick(stream: EventSource, g: CanvasRenderingContext2D) {
-  stream.onmessage = (ev) => {
-    const atk = JSON.parse(ev.data) as Attack;
-    requestAnimationFrame(() => drawAttack(g, atk));
-  };
-}`,
-    },
+      "path": "~/projects/live-ddos-map/frontend/src/hooks/useSocket.ts",
+      "lang": "ts",
+      "start": 18,
+      "code": "  useEffect(() => {\n    // Create socket connection\n    const newSocket = io(SERVER_URL, {\n      transports: ['websocket', 'polling'],\n    });\n\n    // Connection event handlers\n    newSocket.on('connect', () => {\n      console.log('Connected to server');\n      setIsConnected(true);\n    });\n\n    newSocket.on('disconnect', () => {\n      console.log('Disconnected from server');\n      setIsConnected(false);\n    });\n\n    // Data event handlers\n    newSocket.on('initial_attacks', (initialAttacks: Attack[]) => {\n      console.log('Received initial attacks:', initialAttacks.length);\n      setAttacks(initialAttacks);\n    });\n\n    newSocket.on('new_attacks', (newAttacks: Attack[]) => {\n      console.log('Received new attacks:', newAttacks.length);\n      setAttacks(prev => {\n        // Remove old attacks (older than 5 minutes) and add new ones\n        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);\n        const filteredAttacks = prev.filter(attack => \n          new Date(attack.timestamp) > fiveMinutesAgo\n        );\n        return [...filteredAttacks, ...newAttacks];\n      });\n    });\n\n    newSocket.on('attack_stats', (newStats: AttackStats) => {\n      setStats(newStats);\n    });\n"
+    }
   ];
 
   const INSERT_POOL = [
@@ -240,7 +168,7 @@ export function tick(stream: EventSource, g: CanvasRenderingContext2D) {
       // line number
       wctx.fillStyle = COL.faint;
       wctx.textAlign = "right";
-      wctx.fillText(String(li + 1), x + gutterW - CW, y);
+      wctx.fillText(String(li + (f.start || 1)), x + gutterW - CW, y);
       // code
       const text = lines[li];
       wctx.textAlign = "left";
@@ -302,9 +230,10 @@ export function tick(stream: EventSource, g: CanvasRenderingContext2D) {
     wctx.fillText(shortPath, x + modeW + CW, sy - LH * 0.1);
     const pct = Math.round(((top + 1) / Math.max(1, lines.length - rows)) * 100);
     wctx.textAlign = "right";
+    const ln = cursor.l + (f.start || 1);
     const posText = lines.length <= rows
-      ? `${cursor.l + 1}:${cursor.c + 1} All`
-      : `${cursor.l + 1}:${cursor.c + 1} ${isFinite(pct) ? Math.min(100, Math.max(1, pct)) : 1}%`;
+      ? `${ln}:${cursor.c + 1} All`
+      : `${ln}:${cursor.c + 1} ${isFinite(pct) ? Math.min(100, Math.max(1, pct)) : 1}%`;
     wctx.fillText(posText, x + w - CW, sy - LH * 0.1);
     wctx.restore();
   }
@@ -572,6 +501,14 @@ export function tick(stream: EventSource, g: CanvasRenderingContext2D) {
 
   /* ── main loop ─────────────────────────────────────── */
 
+  // Respect "reduce motion": draw a still frame and only redraw on change.
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function drawStill() {
+    if (wall.width) drawWall();
+    if (kb.width) drawKb(0);
+  }
+
   let lastFrame = 0;
   function frame(t) {
     // 30fps on small screens: halves canvas work on phones
@@ -584,6 +521,17 @@ export function tick(stream: EventSource, g: CanvasRenderingContext2D) {
     if (kb.isConnected && kb.width) drawKb(t);
     requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
-  ghost();
+  // canvas text is measured with the web font, so re-measure once it loads
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { resize(); resizeKb(); if (REDUCED) drawStill(); });
+  }
+
+  if (REDUCED) {
+    drawStill();
+    window.addEventListener("resize", drawStill);
+    window.addEventListener("zamo:theme", drawStill);
+  } else {
+    requestAnimationFrame(frame);
+    ghost();
+  }
 })();

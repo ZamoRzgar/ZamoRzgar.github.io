@@ -12,7 +12,9 @@
   const term = $("#term");
   const sbStats = $("#sb-stats");
   const tabFile = $("#tab-file");
+  const announce = $("#announce");
   const entries = SITE.entries;
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let idx = 0;
 
   /* ── colors (canvas needs values, not var()) ───────── */
@@ -28,18 +30,7 @@
 
   /* ── theme ─────────────────────────────────────────── */
 
-  const THEMES = ["dark", "paper", "phosphor"];
-
-  function cycleTheme(name) {
-    const cur = document.documentElement.dataset.theme;
-    const next = name && THEMES.includes(name)
-      ? name
-      : THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
-    document.documentElement.dataset.theme = next;
-    try { localStorage.setItem("zamo.theme", next); } catch (e) {}
-    window.dispatchEvent(new Event("zamo:theme"));
-    return next;
-  }
+  const cycleTheme = Theme.cycle;
 
   /* ── terminal rendering ────────────────────────────── */
 
@@ -67,6 +58,25 @@
 
   function link(href, text) {
     return `<a href="${href}" target="_blank" rel="noopener">${esc(text || href)}</a>`;
+  }
+
+  const doiUrl = (doi) => "https://doi.org/" + doi;
+
+  function pubLines(p) {
+    const vol = p.volume ? ` · vol. ${p.volume}${p.issue ? `(${p.issue})` : ""}` : "";
+    return [
+      `<span class="head">${esc(p.title)}</span>`,
+      `<span class="dim">${esc(p.authors)} — ${esc(p.venue)}${vol} · ${p.year}</span>`,
+      kv("doi", link(doiUrl(p.doi), p.doi)),
+    ];
+  }
+
+  // Optional profile links from SITE.links; empty ones are skipped.
+  function extraLinks() {
+    const names = { cv: "cv.pdf", linkedin: "linkedin", scholar: "scholar", orcid: "orcid" };
+    return Object.entries(names)
+      .filter(([k]) => SITE.links && SITE.links[k])
+      .map(([k, label]) => link(SITE.links[k], label));
   }
 
   function portraitBlock(sideHtml) {
@@ -100,7 +110,8 @@
     L.push(
       `<span class="head">Codec</span> — Software Engineer                                  <span class="dim">2023–2024</span>`,
       `  Scalable web apps with Next.js + Supabase, +30% responsiveness.`,
-      `  Backend optimization −25% response time · AI features, chatbots.`,
+      `  Led backend optimization −25% response time · managed dev teams.`,
+      `  AI features: chatbots and trend-analysis systems.`,
       `<span class="head">SDE</span>   — Software Engineer &amp; IT Specialist                  <span class="dim">2020–2023</span>`,
       `  IT systems +40% reliability · training −20% tech incidents.`,
     );
@@ -122,12 +133,8 @@
       `  <span class="dim">Both degrees funded by the Chinese Government (MOFCOM).</span>`,
     );
     L.push("");
-    L.push(...promptLines("~", null, "cat publication.txt"));
-    L.push(
-      `<span class="head">Edge AI for Real-Time Vision: Challenges, Limitations,</span>`,
-      `<span class="head">and Future Research Directions</span>`,
-      kv("doi", link("https://doi.org/10.26389/AJSRP.K091025", "10.26389/AJSRP.K091025")),
-    );
+    L.push(...promptLines("~", null, "cat publications.txt"));
+    for (const p of SITE.publications) L.push(...pubLines(p));
     L.push("");
     L.push(...promptLines("~", null, "stack --languages"));
     const max = Math.max(...SITE.langs.map((l) => l[1]));
@@ -143,9 +150,12 @@
     );
     L.push("");
     L.push(...promptLines("~", null, "ls links/"));
-    L.push(
-      `${link(SITE.github, "github")}    ${link("mailto:" + SITE.email, "email")}    ${link("https://doi.org/10.26389/AJSRP.K091025", "paper")}`,
-    );
+    L.push([
+      link(SITE.github, "github"),
+      link("mailto:" + SITE.email, "email"),
+      ...extraLinks(),
+      link(doiUrl(SITE.publications[0].doi), "paper"),
+    ].join("    "));
     return L;
   }
 
@@ -156,6 +166,9 @@
     L.push(`<span class="head">${esc(e.repo)}</span>`);
     L.push(esc(e.tagline));
     L.push("");
+    if (e.upstream) {
+      L.push(kv("fork of", link(`https://github.com/${e.upstream}`, e.upstream)));
+    }
     L.push(
       kv("lang", `<span class="accent">${esc(e.lang)}</span>`),
       kv("since", `${e.since}   <span class="dim">pushed ${e.pushed}</span>`),
@@ -177,21 +190,13 @@
   function buildResearch() {
     const L = [];
     L.push(...promptLines("~/research", null, "cat publications.txt"));
-    L.push(
-      `<span class="head">Edge AI for Real-Time Vision: Challenges, Limitations,</span>`,
-      `<span class="head">and Future Research Directions</span>`,
-      kv("doi", link("https://doi.org/10.26389/AJSRP.K091025", "10.26389/AJSRP.K091025")),
-    );
+    for (const p of SITE.publications) L.push(...pubLines(p));
     L.push("");
     L.push(...promptLines("~/research", null, "ls awards/"));
-    L.push(
-      `<span class="hot">·</span> MOFCOM Chinese Government Scholarship — PhD, Beihang University  <span class="dim">2026</span>`,
-      `<span class="hot">·</span> MOFCOM Chinese Government Scholarship — MSc, Nankai University  <span class="dim">2024</span>`,
-      `<span class="hot">·</span> World Internet Conference — Invited Speaker on AI &amp; digital economy  <span class="dim">2024</span>`,
-      `<span class="hot">·</span> Future Inventors Activity — Project Lead, Kurdistan Students Assoc.  <span class="dim">2026</span>`,
-      `<span class="hot">·</span> openKylin — contributor, speaker, AI optimization competition`,
-      `<span class="hot">·</span> Future Leadership Program — American University of Iraq, Sulaimani  <span class="dim">2016–17</span>`,
-    );
+    for (const a of SITE.awards) {
+      L.push(`<span class="hot">·</span> ${esc(a.what)}` +
+        (a.when ? `  <span class="dim">${a.when}</span>` : ""));
+    }
     L.push("");
     L.push(...promptLines("~/research", null, "langs --human"));
     L.push(
@@ -212,9 +217,9 @@
     }
     if (e.type === "research") {
       return [
-        ["PAPERS", 1],
-        ["AWARDS", 6],
-        ["TALKS", 2],
+        ["PAPERS", SITE.publications.length],
+        ["AWARDS", SITE.awards.length],
+        ["TALKS", SITE.awards.filter((a) => a.talk).length],
       ];
     }
     return [
@@ -257,6 +262,7 @@
       c.setAttribute("aria-selected", j === idx ? "true" : "false");
     });
     tabFile.textContent = e.repo || e.title;
+    announce.textContent = e.tagline ? `${e.title} — ${e.tagline}` : e.title;
     renderTerm(e);
     renderStats(e);
     if (opts.push !== false) {
@@ -270,7 +276,7 @@
 
   function currentLink(e) {
     if (e.type === "project") return `https://github.com/${SITE.githubUser}/${e.repo}`;
-    if (e.type === "research") return "https://doi.org/10.26389/AJSRP.K091025";
+    if (e.type === "research") return doiUrl(SITE.publications[0].doi);
     return SITE.github;
   }
 
@@ -379,7 +385,8 @@
   function drawInk(t) {
     const { W, H, R, cx, cy, half, step } = geo;
     ictx.clearRect(0, 0, W, H);
-    const form = Math.min(1, (t - t0) / 2800);
+    if (REDUCED) t = 0;
+    const form = REDUCED ? 1 : Math.min(1, (t - t0) / 2800);
     const p = form < 1 ? 1 - Math.pow(1 - form, 3) : 1;
 
     ictx.strokeStyle = COL.dim;
@@ -520,9 +527,10 @@
       return;
     }
     lastFrame = t;
+    const before = rot;
     if (!dragging) {
       if (snapping) {
-        rot += (snapTarget - rot) * 0.14;
+        rot += (snapTarget - rot) * (REDUCED ? 1 : 0.14);
         if (Math.abs(snapTarget - rot) < 0.0004) { rot = snapTarget; snapping = false; }
       } else {
         rot = clampRot(rot + vel);
@@ -535,12 +543,18 @@
         }
       }
     }
-    layoutCards();
-    drawInk(t);
+    if (!REDUCED || inkDirty || rot !== before || dragging) {
+      layoutCards();
+      drawInk(t);
+      inkDirty = false;
+    }
     requestAnimationFrame(tick);
   }
+  let inkDirty = true;
+  window.addEventListener("zamo:theme", () => { inkDirty = true; });
 
   window.addEventListener("resize", () => {
+    inkDirty = true;
     measure();
     rot = rotFor(idx);
     snapTarget = rot;
@@ -626,42 +640,71 @@
   /* ── keyboard ──────────────────────────────────────── */
 
   document.addEventListener("keydown", (ev) => {
-    if (!cmdline.hidden) return;
+    if (!cmdline.hidden || !isShortcutTarget(ev)) return;
     if (ev.key === "ArrowDown" || ev.key === "j") { select(idx + 1); ev.preventDefault(); }
     else if (ev.key === "ArrowUp" || ev.key === "k") { select(idx - 1); ev.preventDefault(); }
     else if (ev.key === "Enter") { window.open(currentLink(entries[idx]), "_blank", "noopener"); }
     else if (ev.key === ":") { openCmd(); ev.preventDefault(); }
   });
 
-  /* ── visits + sparkline ────────────────────────────── */
+  /* ── local time in Beijing (handy before emailing) ─ */
 
-  let visits = 1;
-  try {
-    visits = (parseInt(localStorage.getItem("zamo.visits"), 10) || 0) + 1;
-    localStorage.setItem("zamo.visits", String(visits));
-  } catch (e) {}
-  $("#sb-visits").textContent = `VISITS · local  ${visits}`;
-
-  const spark = $("#spark");
-  let seed = 42;
-  const rand = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
-  for (let i = 0; i < 42; i++) {
-    const b = document.createElement("i");
-    const h = 2 + Math.round(rand() * 12);
-    b.style.height = h + "px";
-    if (h > 11) b.className = "peak";
-    spark.appendChild(b);
+  const clock = $("#sb-clock");
+  function tickClock() {
+    const time = new Date().toLocaleTimeString("en-GB", {
+      timeZone: "Asia/Shanghai", hour: "2-digit", minute: "2-digit",
+    });
+    clock.textContent = `BEIJING · ${time} UTC+8`;
   }
+  tickClock();
+  setInterval(tickClock, 30000);
 
   /* ── deco readout jitter ───────────────────────────── */
 
   const readout = $("#deco-readout");
-  setInterval(() => {
+  if (!REDUCED) setInterval(() => {
     readout.textContent =
       `['pupil:u'] 0.${String(Math.floor(Math.random() * 1e7)).padStart(7, "0")}\n` +
       `0.50${String(Math.floor(Math.random() * 1e5)).padStart(5, "0")}\n` +
       `0.017${String(Math.floor(Math.random() * 1e5)).padStart(5, "0")}\nNone`;
   }, 900);
+
+  /* ── live GitHub numbers (falls back to data.js) ───── */
+
+  async function loadGitHub() {
+    const KEY = "zamo.gh";
+    let gh = null;
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(KEY) || "null");
+      if (cached && Date.now() - cached.at < 3600e3) gh = cached;
+    } catch (e) {}
+    if (!gh) {
+      const api = `https://api.github.com/users/${SITE.githubUser}`;
+      const [user, repos] = await Promise.all([
+        fetch(api).then((r) => (r.ok ? r.json() : null)),
+        fetch(`${api}/repos?per_page=100`).then((r) => (r.ok ? r.json() : null)),
+      ]);
+      if (!user || !Array.isArray(repos)) return; // rate-limited or offline
+      gh = {
+        at: Date.now(),
+        followers: user.followers,
+        repos: user.public_repos,
+        pushed: Object.fromEntries(repos.map((r) => [r.name, r.pushed_at.slice(0, 10)])),
+        langs: repos.filter((r) => !r.fork && r.language).map((r) => r.language),
+      };
+      try { sessionStorage.setItem(KEY, JSON.stringify(gh)); } catch (e) {}
+    }
+    SITE.stats.followers = gh.followers;
+    SITE.stats.repos = gh.repos;
+    for (const e of entries) if (e.repo && gh.pushed[e.repo]) e.pushed = gh.pushed[e.repo];
+    const counts = {};
+    for (const l of gh.langs) counts[l] = (counts[l] || 0) + 1;
+    SITE.langs = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    renderStats(entries[idx]);
+    // refresh dates on an open project; other pages pick up the new
+    // numbers on the next selection (no need to replay the portrait intro)
+    if (entries[idx].type === "project") renderTerm(entries[idx]);
+  }
 
   /* ── boot ──────────────────────────────────────────── */
 
@@ -673,6 +716,7 @@
   snapTarget = rot;
   select(start, { push: false, rotate: false });
   requestAnimationFrame(tick);
+  loadGitHub().catch(() => {});
 
   window.addEventListener("hashchange", () => {
     const id = location.hash.slice(1).split("/")[0];

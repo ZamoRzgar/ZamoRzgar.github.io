@@ -3,21 +3,11 @@
 (() => {
   "use strict";
 
-  const THEMES = ["dark", "paper", "phosphor"];
+  const SITE_URL = "portfolio/";
   const cmdline = document.getElementById("cmdline");
   const cmdInput = document.getElementById("cmd-input");
 
-  function cycleTheme(name) {
-    const cur = document.documentElement.dataset.theme;
-    const next = name && THEMES.includes(name)
-      ? name
-      : THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
-    document.documentElement.dataset.theme = next;
-    try { localStorage.setItem("zamo.theme", next); } catch (e) {}
-    window.dispatchEvent(new Event("zamo:theme"));
-  }
-
-  document.getElementById("theme-btn").addEventListener("click", () => cycleTheme());
+  document.getElementById("theme-btn").addEventListener("click", () => Theme.cycle());
 
   function openCmd() {
     cmdline.hidden = false;
@@ -35,14 +25,14 @@
     if (ev.key !== "Enter") return;
     const v = cmdInput.value.trim().toLowerCase();
     closeCmd();
-    if (v === "theme" || v.startsWith("theme ")) cycleTheme(v.split(" ")[1]);
-    else if (v === "enter" || v === "e" || v === "site") location.href = "portifolio/";
+    if (v === "theme" || v.startsWith("theme ")) Theme.cycle(v.split(" ")[1]);
+    else if (v === "enter" || v === "e" || v === "site") location.href = SITE_URL;
     else if (v === "github") window.open(SITE.github, "_blank", "noopener");
   });
 
   document.addEventListener("keydown", (ev) => {
-    if (!cmdline.hidden) return;
-    if (ev.key === "Enter") location.href = "portifolio/";
+    if (!cmdline.hidden || !isShortcutTarget(ev)) return;
+    if (ev.key === "Enter") location.href = SITE_URL;
     else if (ev.key === ":") { openCmd(); ev.preventDefault(); }
   });
 })();
