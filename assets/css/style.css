@@ -373,6 +373,33 @@ a:hover { color: var(--accent); }
 .term a:hover { border-bottom-color: var(--accent); }
 
 .term .head { color: var(--fg); font-weight: 700; }
+
+/* live-demo button on projects that have one */
+.term .run-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  white-space: normal;
+}
+.term a.run-btn {
+  display: inline-block;
+  padding: 7px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.term a.run-btn:hover,
+.term a.run-btn:focus-visible {
+  background: transparent;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
 .term .sub { color: var(--dim); }
 
 /* deco */

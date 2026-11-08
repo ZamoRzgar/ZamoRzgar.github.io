@@ -166,6 +166,14 @@
     L.push(`<span class="head">${esc(e.repo)}</span>`);
     L.push(esc(e.tagline));
     L.push("");
+    if (e.homepage) {
+      // live demo: a real button, not just a link at the bottom
+      L.push(
+        `<div class="run-row"><a class="run-btn" href="${e.homepage}">▶ play it live</a>` +
+        `<span class="dim">runs in your browser · nothing to install</span></div>`
+      );
+      L.push("");
+    }
     if (e.upstream) {
       L.push(kv("fork of", link(`https://github.com/${e.upstream}`, e.upstream)));
     }
@@ -275,7 +283,7 @@
   }
 
   function currentLink(e) {
-    if (e.type === "project") return `https://github.com/${SITE.githubUser}/${e.repo}`;
+    if (e.type === "project") return e.homepage || `https://github.com/${SITE.githubUser}/${e.repo}`;
     if (e.type === "research") return doiUrl(SITE.publications[0].doi);
     return SITE.github;
   }
